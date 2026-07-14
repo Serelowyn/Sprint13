@@ -4,6 +4,10 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_absolute_error, make_scorer
 import numpy as np
+from sklearn.linear_model import LinearRegression
+from sklearn.tree import DecisionTreeRegression
+from sklearn.ensemble import RandomForestRegressor
+
 # --------------- Fin de las Importaciones
 
 #para tripleten
@@ -207,39 +211,7 @@ smape_scorer = make_scorer(smape, greater_is_better=False)
 # 3.2. Entrena diferentes modelos. Evalúalos aplicando la validación cruzada. Elige el mejor modelo y pruébalo utilizando la muestra de prueba. Facilita los resultados.
 
 modelos = {
-    "regresion lineal": LinearRegression(),
-    "arbol de decision": DecisionTreeRegressor(random_state=12345, max_depth=8),
-    "bosque aleatorio": RandomForestRegressor(random_state=12345, n_estimators=50, max_depth=8),
+    "regresion lineal": ,
+    "arbol de decision": ,
+    "bosque aleatorio"
 }
-
-resultados = {}
-for nombre, modelo in modelos.items():
-    smape_rougher_cv = -cross_val_score(
-        modelo, features_train, target_train_rougher, cv=5, scoring=smape_scorer
-    ).mean()
-    smape_final_cv = -cross_val_score(
-        modelo, features_train, target_train_final, cv=5, scoring=smape_scorer
-    ).mean()
-    smape_total_cv = 0.25 * smape_rougher_cv + 0.75 * smape_final_cv
-    resultados[nombre] = smape_total_cv
-    print(nombre)
-    print("smape rougher (cv):", smape_rougher_cv)
-    print("smape final (cv):", smape_final_cv)
-    print("smape total (cv):", smape_total_cv)
-    print()
-
-mejor_nombre = min(resultados, key=resultados.get)
-print("mejor modelo segun validacion cruzada:", mejor_nombre)
-
-# entreno el mejor modelo con todo el train y lo pruebo con el set de prueba
-modelo_rougher = modelos[mejor_nombre]
-modelo_final = modelos[mejor_nombre]
-
-modelo_rougher.fit(features_train, target_train_rougher)
-modelo_final.fit(features_train, target_train_final)
-
-pred_test_rougher = modelo_rougher.predict(features_test)
-pred_test_final = modelo_final.predict(features_test)
-
-smape_prueba = smape_final(target_test_rougher, pred_test_rougher, target_test_final, pred_test_final)
-print("smape final en el set de prueba:", smape_prueba)
