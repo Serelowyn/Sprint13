@@ -211,6 +211,7 @@ smape_scorer = make_scorer(smape, greater_is_better=False)
 
 # 3.2. Entrena diferentes modelos. Evalúalos aplicando la validación cruzada. Elige el mejor modelo y pruébalo utilizando la muestra de prueba. Facilita los resultados.
 
+"""se eligieron esa n_estimators=50 y max_depth=8, ya que se considera suficiente, pero principalemnte porque si subo ambos, el entrenamiento dura demasiado y no mejora tanto la calidad del resultado, el cambio es mas drastico para max_depth cuando aumenta"""
 modelos = {
     "regresion lineal": LinearRegression(),
     "arbol de decision": DecisionTreeRegressor(random_state=12345, max_depth=8),
@@ -229,3 +230,21 @@ for nombre, modelo in modelos.items():
     print("smape final (cv):", smape_final_cv)
     print("smape total (cv):", smape_total_cv)
     print()
+
+mejor_nombre = min(resultados, key=resultados.get)
+print("mejor modelo de los 3s:", mejor_nombre)
+
+#entrenamiento del mejor modelo con todo el train y lo pruebo con el set de prueba
+modelo_rougher = modelos[mejor_nombre]
+modelo_final = modelos[mejor_nombre]
+
+modelo_rougher.fit(features_train, target_train_rougher)
+modelo_final.fit(features_train, target_train_final)
+
+pred_test_rougher = modelo_rougher.predict(features_test)
+pred_test_final = modelo_final.predict(features_test)
+
+smape_prueba = smape_final(target_test_rougher, pred_test_rougher, target_test_final, pred_test_final)
+print("smape final - set de prueba:", smape_prueba)
+
+"""en resumen: el bosque aleatorio fue el mejor modelo, tiene los resultados mas bajos a comparacion de los demas, siendo el arbol de decision con el smape mas alto de todos los modelos. el bosque aleatorio es el mejor modelo entonces, para predecir la recuperacion del au"""
