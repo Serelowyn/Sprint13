@@ -3,7 +3,7 @@
 import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_absolute_error, make_scorer
-
+import numpy as np
 # --------------- Fin de las Importaciones
 
 #para tripleten
@@ -191,6 +191,7 @@ target_test_final = test["final.output.recovery"]
 
 # 3.1. Escribe una función para calcular el valor final de sMAPE.
 
+"""formulas proporcionadas por tp para el proyecto"""
 def smape(target, predicciones):
     target = np.array(target)
     predicciones = np.array(predicciones)
