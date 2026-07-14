@@ -115,3 +115,44 @@ print("mean feed_size train:", round(train["rougher.input.feed_size"].mean(),4))
 print("mean feed_size test:", round(test["rougher.input.feed_size"].mean(),4))
 
 """distribuciones similares entre test y train con diferencia del volumen"""
+
+# 2.3. Considera las concentraciones totales de todas las sustancias en las diferentes etapas: materia prima, concentrado rougher y concentrado final. ¿Observas algún valor anormal en la distribución total? Si es así, ¿merece la pena eliminar esos valores de ambas muestras? Describe los resultados y elimina las anomalías.
+
+"""separacion enlistada con las columnas de interes para que se sumen en cada una de las etapas"""
+feed_cols = ["rougher.input.feed_au", "rougher.input.feed_ag",
+             "rougher.input.feed_pb", "rougher.input.feed_sol"]
+rougher_cols = ["rougher.output.concentrate_au", "rougher.output.concentrate_ag",
+                "rougher.output.concentrate_pb", "rougher.output.concentrate_sol"]
+final_cols = ["final.output.concentrate_au", "final.output.concentrate_ag",
+              "final.output.concentrate_pb", "final.output.concentrate_sol"]
+
+"""se especifica el axis=1 para que no se sume columna por columna ya que se buscan las concentraciones totales de las sutancias"""
+train_feed_total = train[feed_cols].sum(axis=1)
+train_rougher_total = train[rougher_cols].sum(axis=1)
+train_final_total = train[final_cols].sum(axis=1)
+
+# histograma - alimentacion rougher
+plt.figure()
+plt.hist(train_feed_total, bins=50)
+plt.title("concentracion alimentacion rougher")
+plt.show()
+
+# histograma - concentrado rougher
+plt.figure()
+plt.hist(train_rougher_total, bins=50)
+plt.title("concentracion concentrado rougher")
+plt.show()
+
+#histogra,a - concentrado final
+plt.figure()
+plt.hist(train_final_total, bins=50)
+plt.title("concentracion concentrado final")
+plt.show()
+
+"""cuando la concentracion es cercana o igual a 0, se descartan, esta situacion se considera comi(anomalias) por lo tanto se tienen que descartar"""
+
+#reviso en antes_train la estructura previa para comparar despues
+antes_train = train.shape[0]
+train = train[(train_feed_total > 10) & (train_rougher_total > 10) & (train_final_total > 10)]
+#impresion para verificar ña cantidad de filas perdidas
+print("filas de train antes:", antes_train, "despues de anomalias:", train.shape[0])
