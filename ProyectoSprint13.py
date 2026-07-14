@@ -99,4 +99,17 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-#lo que se ve es que el oro (au) va subiendo de concentracion en cada etapa de purificacion, mientras que la plata (ag) va bajando. el plomo (pb) se mantiene mas o menos estable con una leve subida. tiene sentido porque el proceso esta pensado justamente para ir concentrando el oro
+etapas = ["rougher.input.feed", "rougher.output.concentrate", "primary_cleaner.output.concentrate", "final.output.concentrate"]
+metales = ["au", "ag", "pb"]
+
+for metal in metales:
+    medias = [train[f"{etapa}_{metal}"].mean() for etapa in etapas]
+    plt.plot(etapas, medias, marker="o", label=metal)
+
+plt.xticks(rotation=45, ha="right")
+plt.title("concentracion promedio por etapa")
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+"""el au sube de concentracion por etapa de purificacion. el ag baja. el pb sube. el oro es el que sube mas de todos"""
