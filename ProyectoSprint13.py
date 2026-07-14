@@ -48,3 +48,9 @@ f = train["rougher.input.feed_au"]
 t = train["rougher.output.tail_au"]
 
 recovery_calculado = c * (f - t) / (f * (c - t)) * 100
+
+# comparo solo las filas donde hay valor real y valor calculado, si no el eam no se puede calcular
+comparacion = pd.DataFrame({"calculado": recovery_calculado, "real": train["rougher.output.recovery"]}).dropna()
+ 
+eam = mean_absolute_error(comparacion["real"], comparacion["calculado"])
+print("eam entre el recovery calculado y el real:", eam)
