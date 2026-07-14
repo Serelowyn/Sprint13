@@ -64,3 +64,19 @@ print("cantidad de columnas que no estan en test:", len(columnas_faltantes))
 print(columnas_faltantes)
 
 """aquellas caracteristicas no disponibles en el conjunto de prueba son aquellos que tienen tipo .calculation o .output. valores que se saben despues, no al momento de iniciar este proceso"""
+
+# 1.4. Realiza el preprocesamiento de datos.
+
+"""se dividen los df por fecha, se busca rellenar los nulos usando los valores ordenados de manera cronologica"""
+train = train.sort_values("date")
+test = test.sort_values("date")
+full = full.sort_values("date")
+
+"""se necesita quitar las filas con na de mis target ya que no sirven para entrenar, posteriormente se rellenan las columnas de features, se decide en agarrar el ultimo valor valido porque si lo hago asi entonces el dato que se rellene tendra sentido cronologico, a diferencia de usar un promedio, mediana, etc."""
+train = train.dropna(subset=["rougher.output.recovery", "final.output.recovery"])
+train = train.ffill().bfill()
+test = test.ffill().bfill()
+
+"""verificacion rapida de nulos"""
+print("train:", train.isna().sum().sum())
+print("test:", test.isna().sum().sum())
