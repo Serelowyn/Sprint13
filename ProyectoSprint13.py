@@ -2,7 +2,7 @@
 
 import pandas as pd
 from matplotlib import pyplot as plt
-from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import mean_absolute_error, make_scorer
 
 # --------------- Fin de las Importaciones
 
@@ -190,3 +190,16 @@ target_test_final = test["final.output.recovery"]
 # 3. Construye el modelo
 
 # 3.1. Escribe una función para calcular el valor final de sMAPE.
+
+def smape(target, predicciones):
+    target = np.array(target)
+    predicciones = np.array(predicciones)
+    return np.mean(np.abs(target - predicciones) / ((np.abs(target) + np.abs(predicciones)) / 2)) * 100
+ 
+def smape_final(target_rougher, pred_rougher, target_final, pred_final):
+    smape_rougher = smape(target_rougher, pred_rougher)
+    smape_f = smape(target_final, pred_final)
+    return 0.25 * smape_rougher + 0.75 * smape_f
+ 
+# scorer negativo porque cross_val_score espera que un numero mas alto sea mejor, y en smape es al reves (mas bajo es mejor)
+smape_scorer = make_scorer(smape, greater_is_better=False)
