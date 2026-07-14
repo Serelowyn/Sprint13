@@ -1,6 +1,7 @@
 # --------------- Importaciones
 
 import pandas as pd
+from matplotlib import pyplot as plt
 from sklearn.metrics import mean_absolute_error
 
 # --------------- Fin de las Importaciones
@@ -80,3 +81,22 @@ test = test.ffill().bfill()
 """verificacion rapida de nulos"""
 print("train:", train.isna().sum().sum())
 print("test:", test.isna().sum().sum())
+
+# 2. Analiza los datos
+
+# 2.1. Observa cómo cambia la concentración de metales (Au, Ag, Pb) en función de la etapa de purificación.
+
+etapas = ["rougher.input.feed", "rougher.output.concentrate", "primary_cleaner.output.concentrate", "final.output.concentrate"]
+metales = ["au", "ag", "pb"]
+
+for metal in metales:
+    medias = [train[f"{etapa}_{metal}"].mean() for etapa in etapas]
+    plt.plot(etapas, medias, marker="o", label=metal)
+
+plt.xticks(rotation=45, ha="right")
+plt.title("concentracion promedio por etapa")
+plt.legend()
+plt.tight_layout()
+plt.show()
+
+#lo que se ve es que el oro (au) va subiendo de concentracion en cada etapa de purificacion, mientras que la plata (ag) va bajando. el plomo (pb) se mantiene mas o menos estable con una leve subida. tiene sentido porque el proceso esta pensado justamente para ir concentrando el oro
