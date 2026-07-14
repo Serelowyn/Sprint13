@@ -99,17 +99,19 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-etapas = ["rougher.input.feed", "rougher.output.concentrate", "primary_cleaner.output.concentrate", "final.output.concentrate"]
-metales = ["au", "ag", "pb"]
+"""el au sube de concentracion por etapa de purificacion. el ag baja. el pb sube. el oro es el que sube mas de todos"""
 
-for metal in metales:
-    medias = [train[f"{etapa}_{metal}"].mean() for etapa in etapas]
-    plt.plot(etapas, medias, marker="o", label=metal)
+# 2.2. Compara las distribuciones del tamaño de las partículas de la alimentación en el conjunto de entrenamiento y en el conjunto de prueba. Si las distribuciones varían significativamente, la evaluación del modelo no será correcta.
 
-plt.xticks(rotation=45, ha="right")
-plt.title("concentracion promedio por etapa")
+plt.figure()
+plt.hist(train["rougher.input.feed_size"], bins=50, alpha=0.5, label="train")
+plt.hist(test["rougher.input.feed_size"], bins=50, alpha=0.5, label="test")
+plt.title("distribucion de rougher.input.feed_size")
 plt.legend()
-plt.tight_layout()
 plt.show()
 
-"""el au sube de concentracion por etapa de purificacion. el ag baja. el pb sube. el oro es el que sube mas de todos"""
+"""se redondea a 4 decimales para facilitar la lectura"""
+print("mean feed_size train:", round(train["rougher.input.feed_size"].mean(),4))
+print("mean feed_size test:", round(test["rougher.input.feed_size"].mean(),4))
+
+"""distribuciones similares entre test y train con diferencia del volumen"""
