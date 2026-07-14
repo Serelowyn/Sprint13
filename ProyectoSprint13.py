@@ -156,3 +156,37 @@ antes_train = train.shape[0]
 train = train[(train_feed_total > 10) & (train_rougher_total > 10) & (train_final_total > 10)]
 #impresion para verificar ña cantidad de filas perdidas
 print("filas de train antes:", antes_train, "despues de anomalias:", train.shape[0])
+
+test_feed_total = test[feed_cols].sum(axis=1)
+antes_test = test.shape[0]
+test = test[test_feed_total > 10]
+print("filas de test antes:", antes_test, "despues anomalias:", test.shape[0])
+
+# features y targets
+
+target_test = full[full["date"].isin(test["date"])][
+    ["date", "rougher.output.recovery", "final.output.recovery"]
+]
+
+test = test.merge(target_test, on="date", how="left")
+test = test.dropna(subset=["rougher.output.recovery", "final.output.recovery"])
+
+#lista de lo que ira en el modelo
+feature_cols = []
+for columna in test.columns:
+    if columna not in ["date", "rougher.output.recovery", "final.output.recovery"]:
+        feature_cols.append(columna)
+
+features_train = train[feature_cols]
+target_train_rougher = train["rougher.output.recovery"]
+target_train_final = train["final.output.recovery"]
+
+features_test = test[feature_cols]
+target_test_rougher = test["rougher.output.recovery"]
+target_test_final = test["final.output.recovery"]
+
+"""esto se necesita para la parte 3 pero se me olvido hacerla antes junto al paso 2.3"""
+
+# 3. Construye el modelo
+
+# 3.1. Escribe una función para calcular el valor final de sMAPE.
