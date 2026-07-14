@@ -53,4 +53,14 @@ recovery_calculado = c * (f - t) / (f * (c - t)) * 100
 comparacion = pd.DataFrame({"calculado": recovery_calculado, "real": train["rougher.output.recovery"]}).dropna()
  
 eam = mean_absolute_error(comparacion["real"], comparacion["calculado"])
-print("eam entre el recovery calculado y el real:", eam)
+print("eam entre el recovery calculado y el real:", round(eam,5))
+
+"""como pequeño analisis, la comparacion nos da resultados identicos por lo que la diferencia es pracitcamente 0."""
+
+# 1.3. Analiza las características no disponibles en el conjunto de prueba. ¿Cuáles son estos parámetros? ¿Cuál es su tipo?
+
+columnas_faltantes = sorted(set(train.columns) - set(test.columns))
+print("cantidad de columnas que no estan en test:", len(columnas_faltantes))
+print(columnas_faltantes)
+
+"""aquellas caracteristicas no disponibles en el conjunto de prueba son aquellos que tienen tipo .calculation o .output. valores que se saben despues, no al momento de iniciar este proceso"""
