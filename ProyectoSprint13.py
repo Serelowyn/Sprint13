@@ -1,6 +1,7 @@
 # --------------- Importaciones
 
 import pandas as pd
+from sklearn.metrics import mean_absolute_error
 
 # --------------- Fin de las Importaciones
 
@@ -34,3 +35,16 @@ print(full.isnull().sum())
 train["date"] = pd.to_datetime(train["date"])
 test["date"] = pd.to_datetime(test["date"])
 full["date"] = pd.to_datetime(full["date"])
+
+# 1.2. Comprueba que el cálculo de la recuperación sea correcto. Calcula la recuperación de la característica rougher.output.recovery mediante el conjunto de entrenamiento. Encuentra el EAM entre tus cálculos y los valores de la característica. Facilita los resultados.
+
+# formula: recovery = c * (f - t) / (f * (c - t)) * 100
+# c = oro en el concentrado rougher
+# f = oro en la alimentacion
+# t = oro en las colas rougher
+
+c = train["rougher.output.concentrate_au"]
+f = train["rougher.input.feed_au"]
+t = train["rougher.output.tail_au"]
+
+recovery_calculado = c * (f - t) / (f * (c - t)) * 100
